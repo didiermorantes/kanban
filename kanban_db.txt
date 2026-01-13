@@ -1,0 +1,48 @@
+CREATE DATABASE kanban_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE kanban_db;
+
+CREATE TABLE projects (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(255) NOT NULL,
+  description TEXT,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE columns (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  project_id INT NOT NULL,
+  name VARCHAR(100) NOT NULL,
+  position INT NOT NULL,
+  is_done TINYINT(1) NOT NULL DEFAULT 0, -- 1 para la columna "Hecho"
+  FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE
+);
+
+CREATE TABLE tasks (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  project_id INT NOT NULL,
+  column_id INT NOT NULL,
+  title VARCHAR(255) NOT NULL,
+  description TEXT,
+  `order` INT DEFAULT 0,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  due_date DATETIME NULL,
+  completed_at DATETIME NULL,
+  FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE,
+  FOREIGN KEY (column_id) REFERENCES columns(id) ON DELETE CASCADE
+);
+
+/* Proyecto de ejemplo */
+INSERT INTO projects (name, description) VALUES
+('Proyecto Demo', 'Este es un proyecto de demostración para el tablero Kanban');
+
+/* Columnas por defecto */
+INSERT INTO columns (project_id, name, position, is_done) VALUES
+(1, 'Por hacer', 1, 0),
+(1, 'En progreso', 2, 0),
+(1, 'Hecho', 3, 1);
+
+/* Tareas de ejemplo */
+INSERT INTO tasks (project_id, column_id, title, description, `order`) VALUES
+(1, 1, 'Definir requerimientos', 'Reunión con el equipo para entender el alcance', 1),
+(1, 2, 'Diseñar base de datos', 'Modelo relacional y diagrama ER', 1),
+(1, 3, 'Configurar entorno de desarrollo', 'Instalar PHP, servidor web y BD', 1);
