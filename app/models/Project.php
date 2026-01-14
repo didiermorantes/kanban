@@ -82,6 +82,7 @@ class Project extends Model
     public static function create(string $name, ?string $description, ?int $responsibleUserId, ?int $createdBy): int
 {
     $db = self::db();
+    $responsibleUserId = $responsibleUserId ?: null;
     $stmt = $db->prepare("
         INSERT INTO projects (created_by, name, responsible_user_id, description)
         VALUES (:created_by, :name, :responsible_user_id, :description)

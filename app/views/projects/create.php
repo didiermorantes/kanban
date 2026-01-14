@@ -13,8 +13,16 @@
     <label for="name">Nombre del proyecto *</label>
     <input type="text" id="name" name="name" required>
 
-    <label for="responsible">Responsable (opcional)</label>
-    <input type="text" id="responsible" name="responsible" placeholder="Nombre del responsable">
+    <label for="responsible">Responsable</label>
+            <select id="responsible_user_id" name="responsible_user_id">
+            <option value="0">Sin responsable</option>
+            <?php foreach ($members as $m): ?>
+                <option value="<?= (int)$m['id'] ?>"
+                <?= ((int)($project['responsible_user_id'] ?? 0) === (int)$m['id']) ? 'selected' : '' ?>>
+                <?= htmlspecialchars($m['name']) ?> (<?= htmlspecialchars($m['email']) ?>)
+                </option>
+            <?php endforeach; ?>
+            </select>
 
 
     <label for="description">Descripción (opcional)</label>

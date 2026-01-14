@@ -89,7 +89,9 @@ class ProjectsController extends BaseController
 
         $name = trim($_POST['name'] ?? '');
         $description = trim($_POST['description'] ?? '');
-        $responsible = trim($_POST['responsible'] ?? '');
+        $responsibleUserId = (int)($_POST['responsible_user_id'] ?? 0);
+        if ($responsibleUserId <= 0) $responsibleUserId = null;
+
 
         if ($name === '') {
             throw new Exception("El nombre del proyecto es obligatorio");
@@ -97,7 +99,8 @@ class ProjectsController extends BaseController
 
         $userId = Auth::userId();
 
-        $projectId = Project::create($name, $description, $responsible, $userId);
+        $projectId = Project::create($name, $description, $responsibleUserId, $userId);
+
 
         // crear columnas por defecto
         Column::createDefaultColumns($projectId);
@@ -229,10 +232,24 @@ class ProjectsController extends BaseController
         Auth::requireLogin();
         Auth::requireRole(['owner','admin']);
 
+        // ✅ tomar id (si eliminas por link <a>, viene por GET)
+        // $projectId = (int)($_GET['id'] ?? 0);
+
+        // Si usas formulario POST para eliminar, usa esto en vez de GET:
+        $projectId = (int)($_POST['id'] ?? 0);
+
+        if ($projectId <= 0) {
+            http_response_code(400);
+            echo "Proyecto inválido";
+            $this->setFlash('error', 'Proyecto no válido para eliminar.');
+            header('Location: ' . BASE_URL . '?controller=projects&action=index');
+            exit;
+        }
 
         ProjectMember::ensureMember($projectId, Auth::userId());
 
 
+        /*
         $id = (int)($_POST['id'] ?? 0);
 
         if ($id <= 0) {
@@ -240,8 +257,10 @@ class ProjectsController extends BaseController
             header('Location: ' . BASE_URL . '?controller=projects&action=index');
             exit;
         }
+        */
 
-        Project::delete($id);
+        // ✅ eliminar
+        Project::delete($projectId);
         $this->setFlash('success', 'Proyecto eliminado correctamente.');
 
         header('Location: ' . BASE_URL . '?controller=projects&action=index');
