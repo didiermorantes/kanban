@@ -3,12 +3,16 @@
 ?>
 <h2>Listado de proyectos</h2>
 
-<div class="top-actions">
-    <a href="<?= BASE_URL ?>?controller=projects&action=create">
-        <button>+ Nuevo proyecto</button>
-    </a>
-</div>
 
+<!-- Botón Nuevo Proyecto / Editar / Eliminar solo para owner y admin -->
+<?php if (in_array(Auth::role(), ['owner','admin'], true)): ?>
+  
+    <div class="top-actions">
+        <a href="<?= BASE_URL ?>?controller=projects&action=create">
+            <button>+ Nuevo proyecto</button>
+        </a>
+    </div>
+<?php endif; ?>
 
 <table>
     <thead>
@@ -86,18 +90,22 @@
                     👁️
                     </a>
 
-                    <a href="<?= BASE_URL ?>?controller=projects&action=edit&id=<?= (int)$project['id'] ?>"
-                    class="btn-action edit tip"
-                    data-tip="Editar Proyecto">
-                    ✏️
-                    </a>
-                    <form method="post"
-                        action="<?= BASE_URL ?>?controller=projects&action=destroy"
-                        style="display:inline"
-                        onsubmit="return confirm('¿Seguro que deseas eliminar este proyecto? Se borrarán también sus tareas.');">
-                        <input type="hidden" name="id" value="<?= (int)$project['id'] ?>">
-                        <button class="btn-action del tip" type="submit" class="btn-secondary"  data-tip="Eliminar Proyecto">🗑️</button>
-                    </form>
+                    <!-- Botón Nuevo Proyecto / Editar / Eliminar para solo owner y admin -->
+                    <?php if (in_array(Auth::role(), ['owner','admin'], true)): ?>
+
+                          <a href="<?= BASE_URL ?>?controller=projects&action=edit&id=<?= (int)$project['id'] ?>"
+                          class="btn-action edit tip"
+                          data-tip="Editar Proyecto">
+                          ✏️
+                          </a>
+                          <form method="post"
+                              action="<?= BASE_URL ?>?controller=projects&action=destroy"
+                              style="display:inline"
+                              onsubmit="return confirm('¿Seguro que deseas eliminar este proyecto? Se borrarán también sus tareas.');">
+                              <input type="hidden" name="id" value="<?= (int)$project['id'] ?>">
+                              <button class="btn-action del tip" type="submit" class="btn-secondary"  data-tip="Eliminar Proyecto">🗑️</button>
+                          </form>
+                    <?php endif; ?>
                 </td>
 
             </tr>

@@ -75,6 +75,8 @@ class ProjectsController extends BaseController
     public function create(): void
     {
         Auth::requireLogin();
+        Auth::requireRole(['owner','admin']);
+
 
         $this->render('projects/create', []);
     }
@@ -82,6 +84,8 @@ class ProjectsController extends BaseController
     public function store(): void
     {
         Auth::requireLogin();
+        Auth::requireRole(['owner','admin']);
+
 
         $name = trim($_POST['name'] ?? '');
         $description = trim($_POST['description'] ?? '');
@@ -131,6 +135,8 @@ class ProjectsController extends BaseController
 
         */
         Auth::requireLogin();
+        Auth::requireRole(['owner','admin']);
+
 
         $projectId = (int)($_GET['id'] ?? 0);
         ProjectMember::ensureMember($projectId, Auth::userId());
@@ -150,6 +156,8 @@ class ProjectsController extends BaseController
     public function update(): void
     {
         Auth::requireLogin();
+        Auth::requireRole(['owner','admin']);
+
 
         /* ANTERIOR UPDATE 
 
@@ -219,6 +227,8 @@ class ProjectsController extends BaseController
     public function destroy(): void
     {
         Auth::requireLogin();
+        Auth::requireRole(['owner','admin']);
+
 
         ProjectMember::ensureMember($projectId, Auth::userId());
 

@@ -2,21 +2,33 @@
 // app/views/projects/show.php
 ?>
 <h2>Proyecto: <?= htmlspecialchars($project['name']) ?></h2>
-<p><?= nl2br(htmlspecialchars($project['description'] ?? '')) ?></p>
+<p>Descripción: <?= nl2br(htmlspecialchars($project['description'] ?? '')) ?></p>
 
-<p>
-    <a href="<?= BASE_URL ?>?controller=projects&action=index" class="btn-secondary">
-        ← Volver al listado de proyectos
-    </a>
-</p>
+<div class="d-inline-flex">
 
-<div class="top-actions">
-    <button id="openTaskModal">+ Nueva tarea</button>
+      <div>
+          <p>
+              <a href="<?= BASE_URL ?>?controller=projects&action=index">
+                <button class="btn-secondary">← Volver al listado de proyectos</button>      
+              </a>
+          </p>
+      </div>
+
+      <div class="top-actions">
+          <button id="openTaskModal">+ Nueva tarea</button>
+      </div>
+
+
+    <!-- Botón Nuevo Proyecto / Editar / Eliminar para owner y admin -->
+    <?php if (in_array(Auth::role(), ['owner','admin'], true)): ?>
+      <div>
+        <a href="<?= BASE_URL ?>?controller=projects&action=report&id=<?= (int)$project['id'] ?>">
+          <button class="btn-secondary">📊 Ver métricas</button>
+        </a>
+    </div>
+    <?php endif; ?>
+
 </div>
-
-<a href="<?= BASE_URL ?>?controller=projects&action=report&id=<?= (int)$project['id'] ?>">
-  <button class="btn-secondary">📊 Ver métricas</button>
-</a>
 
 
 <div class="kanban-board" id="kanbanBoard" data-project-id="<?= (int)$project['id'] ?>">

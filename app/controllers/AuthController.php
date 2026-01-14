@@ -12,7 +12,7 @@ class AuthController extends BaseController
 
             $user = User::findByEmail($email);
             if ($user && password_verify($pass, $user['password_hash'])) {
-                Auth::login((int)$user['id']);
+                Auth::login((int)$user['id'], $user['role'] ?? 'member');
                 header('Location: ' . BASE_URL . '?controller=projects&action=index');
                 exit;
             }

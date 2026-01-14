@@ -15,7 +15,8 @@ class User
 
     public static function find(int $id): ?array
     {
-        $stmt = self::db()->prepare("SELECT id,name,email FROM users WHERE id=? LIMIT 1");
+        // $stmt = self::db()->prepare("SELECT id,name,email FROM users WHERE id=? LIMIT 1");
+        $stmt = self::db()->prepare("SELECT id,name,email,role FROM users WHERE id=? LIMIT 1");
         $stmt->execute([$id]);
         $u = $stmt->fetch();
         return $u ?: null;
