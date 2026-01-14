@@ -782,10 +782,42 @@
 </head>
 <body>
 <header>
+
+
     <h1>Tablero Kanban</h1>
+
+    
+
+    <!-- CERRAR SESION -->  
+<nav>
+    <?php
+    require_once __DIR__ . '/../../core/Auth.php';
+    require_once __DIR__ . '/../models/User.php';
+    ?>
+
+    <?php if (Auth::check()): ?>
+      <?php $u = User::find(Auth::userId()); ?>
+      <div style="display:flex;justify-content:flex-end;align-items:center;gap:10px;margin-bottom:12px;">
+        <span class="tip" data-tip="<?= htmlspecialchars($u['email'] ?? '') ?>">
+          👤 <?= htmlspecialchars($u['name'] ?? 'Usuario') ?>
+        </span>
+
+        <a href="<?= BASE_URL ?>?controller=auth&action=logout"
+          class="btn-action del tip"
+          data-tip="Cerrar sesión">
+          ⎋
+        </a>
+      </div>
+    <?php endif; ?>
+</nav>
+    <!-- FIN CERRAR SESION --> 
+
+
+
     <nav>
         <a href="<?= BASE_URL ?>?controller=projects&action=index">Proyectos</a>
     </nav>
+
     <hr>
 </header>
 
