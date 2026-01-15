@@ -90,8 +90,15 @@
                     👁️
                     </a>
 
-                    <!-- Botón Nuevo Proyecto / Editar / Eliminar para solo owner y admin -->
+                    
+                      <a href="<?= BASE_URL ?>?controller=projects&action=members&id=<?= (int)$project['id'] ?>"
+                      class="btn-action view tip"
+                      data-tip="Miembros del proyecto">👥</a>
+
+                    <!-- Botón Nuevo Proyecto / Editar / Eliminar /miembros para solo owner y admin -->
                     <?php if (in_array(Auth::role(), ['owner','admin'], true)): ?>
+
+
 
                           <a href="<?= BASE_URL ?>?controller=projects&action=edit&id=<?= (int)$project['id'] ?>"
                           class="btn-action edit tip"

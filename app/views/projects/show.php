@@ -26,6 +26,13 @@
           <button class="btn-secondary">📊 Ver métricas</button>
         </a>
     </div>
+
+    <div>
+      <a href="<?= BASE_URL ?>?controller=projects&action=members&id=<?= (int)$project['id'] ?>"
+      class="btn-action view tip"
+      data-tip="Administrar miembros">👥</a>
+
+    </div>
     <?php endif; ?>
 
 </div>

@@ -7,6 +7,7 @@ require_once __DIR__ . '/../models/Task.php';
 require_once __DIR__ . '/../models/KanbanMetrics.php';
 require_once __DIR__ . '/../../core/Auth.php';
 require_once __DIR__ . '/../models/ProjectMember.php';
+require_once __DIR__ . '/../models/User.php';
 
 
 
@@ -282,6 +283,138 @@ class ProjectsController extends BaseController
             'report' => $report
         ]);
     }
+
+    public function members(): void
+    {
+        Auth::requireLogin();
+
+        $projectId = (int)($_GET['id'] ?? 0);
+        if ($projectId <= 0) {
+            http_response_code(400);
+            echo "Proyecto inválido";
+            exit;
+        }
+
+        // Cualquier miembro puede ver la lista
+        ProjectMember::ensureMember($projectId, Auth::userId());
+
+        $project = Project::find($projectId);
+        $members = ProjectMember::usersForProject($projectId);
+
+        // Rol del usuario actual en este proyecto (para la UI)
+        $myRole = ProjectMember::roleFor($projectId, Auth::userId());
+
+        $this->render('projects/members', [
+            'project' => $project,
+            'members' => $members,
+            'myRole'  => $myRole,
+            'error'   => $_GET['error'] ?? '',
+            'ok'      => $_GET['ok'] ?? ''
+        ]);
+    }
+
+    public function addMember(): void
+    {
+        Auth::requireLogin();
+
+        $projectId = (int)($_POST['project_id'] ?? 0);
+        if ($projectId <= 0) {
+            http_response_code(400);
+            echo "Proyecto inválido";
+            exit;
+        }
+
+        // Solo owner/admin del PROYECTO pueden gestionar miembros
+        ProjectMember::ensureRole($projectId, Auth::userId(), ['owner','admin']);
+
+        $email = trim($_POST['email'] ?? '');
+        $role  = trim($_POST['role'] ?? 'member');
+
+        try {
+            ProjectMember::addByEmail($projectId, $email, $role);
+            header('Location: ' . BASE_URL . "?controller=projects&action=members&id=$projectId&ok=Miembro agregado");
+            exit;
+        } catch (Exception $e) {
+            $msg = urlencode($e->getMessage());
+            header('Location: ' . BASE_URL . "?controller=projects&action=members&id=$projectId&error=$msg");
+            exit;
+        }
+    }
+
+    public function updateMemberRole(): void
+    {
+        Auth::requireLogin();
+
+        $projectId = (int)($_POST['project_id'] ?? 0);
+        $userId    = (int)($_POST['user_id'] ?? 0);
+        $newRole   = trim($_POST['role'] ?? '');
+
+        if ($projectId <= 0 || $userId <= 0) {
+            http_response_code(400);
+            echo "Datos inválidos";
+            exit;
+        }
+
+        ProjectMember::ensureRole($projectId, Auth::userId(), ['owner','admin']);
+
+        try {
+            // No permitir quitar el último owner
+            $currentRole = ProjectMember::roleFor($projectId, $userId);
+            if ($currentRole === 'owner' && $newRole !== 'owner') {
+                if (ProjectMember::countOwners($projectId) <= 1) {
+                    throw new Exception("No puedes quitar el rol de owner al último propietario del proyecto.");
+                }
+            }
+
+            ProjectMember::updateRole($projectId, $userId, $newRole);
+            header('Location: ' . BASE_URL . "?controller=projects&action=members&id=$projectId&ok=Rol actualizado");
+            exit;
+        } catch (Exception $e) {
+            $msg = urlencode($e->getMessage());
+            header('Location: ' . BASE_URL . "?controller=projects&action=members&id=$projectId&error=$msg");
+            exit;
+        }
+    }
+
+
+    public function removeMember(): void
+    {
+        Auth::requireLogin();
+
+        $projectId = (int)($_POST['project_id'] ?? 0);
+        $userId    = (int)($_POST['user_id'] ?? 0);
+
+        if ($projectId <= 0 || $userId <= 0) {
+            http_response_code(400);
+            echo "Datos inválidos";
+            exit;
+        }
+
+        ProjectMember::ensureRole($projectId, Auth::userId(), ['owner','admin']);
+
+        try {
+            $currentRole = ProjectMember::roleFor($projectId, $userId);
+
+            if ($currentRole === 'owner' && ProjectMember::countOwners($projectId) <= 1) {
+                throw new Exception("No puedes eliminar al último owner del proyecto.");
+            }
+
+            // Evitar auto-borrado accidental (opcional)
+            if ($userId === Auth::userId()) {
+                throw new Exception("No puedes eliminarte a ti mismo desde aquí.");
+            }
+
+            ProjectMember::remove($projectId, $userId);
+
+            header('Location: ' . BASE_URL . "?controller=projects&action=members&id=$projectId&ok=Miembro eliminado");
+            exit;
+        } catch (Exception $e) {
+            $msg = urlencode($e->getMessage());
+            header('Location: ' . BASE_URL . "?controller=projects&action=members&id=$projectId&error=$msg");
+            exit;
+        }
+    }
+
 
 
 }

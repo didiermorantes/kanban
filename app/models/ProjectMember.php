@@ -43,5 +43,64 @@ class ProjectMember
         return $stmt->fetchAll();
     }
 
+    public static function ensureRole(int $projectId, int $userId, array $allowedRoles): void
+    {
+        $role = self::roleFor($projectId, $userId);
+        if (!$role || !in_array($role, $allowedRoles, true)) {
+            http_response_code(403);
+            echo "No autorizado";
+            exit;
+        }
+    }
+
+    public static function addByEmail(int $projectId, string $email, string $role = 'member'): void
+    {
+        $email = trim(strtolower($email));
+        if ($email === '') {
+            throw new Exception("Email inválido");
+        }
+
+        $db = self::db();
+        $stmt = $db->prepare("SELECT id FROM users WHERE email = ? LIMIT 1");
+        $stmt->execute([$email]);
+        $u = $stmt->fetch();
+
+        if (!$u) {
+            throw new Exception("No existe un usuario registrado con ese email");
+        }
+
+        $userId = (int)$u['id'];
+        self::add($projectId, $userId, $role); // ya lo tienes (INSERT IGNORE)
+    }
+
+    public static function updateRole(int $projectId, int $userId, string $role): void
+    {
+        $allowed = ['owner','admin','member','viewer'];
+        if (!in_array($role, $allowed, true)) {
+            throw new Exception("Rol inválido");
+        }
+
+        $db = self::db();
+        $stmt = $db->prepare("UPDATE project_members SET role = ? WHERE project_id = ? AND user_id = ?");
+        $stmt->execute([$role, $projectId, $userId]);
+    }
+
+    public static function remove(int $projectId, int $userId): void
+    {
+        $db = self::db();
+        $stmt = $db->prepare("DELETE FROM project_members WHERE project_id = ? AND user_id = ?");
+        $stmt->execute([$projectId, $userId]);
+    }
+
+    public static function countOwners(int $projectId): int
+    {
+        $db = self::db();
+        $stmt = $db->prepare("SELECT COUNT(*) AS c FROM project_members WHERE project_id = ? AND role = 'owner'");
+        $stmt->execute([$projectId]);
+        $row = $stmt->fetch();
+        return (int)($row['c'] ?? 0);
+    }
+
+
 
 }
