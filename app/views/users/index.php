@@ -24,6 +24,8 @@
       <th style="padding:8px;">Email</th>
       <th style="padding:8px;">Rol global</th>
       <th style="padding:8px;">Creado</th>
+      <th style="padding:8px;">Acciones</th>
+
     </tr>
   </thead>
   <tbody>
@@ -33,6 +35,17 @@
         <td style="padding:8px;opacity:.85;"><?= htmlspecialchars($u['email']) ?></td>
         <td style="padding:8px;"><strong><?= htmlspecialchars($u['role']) ?></strong></td>
         <td style="padding:8px;opacity:.75;"><?= htmlspecialchars($u['created_at'] ?? '') ?></td>
+        <td style="padding:8px;white-space:nowrap;">
+            <a class="btn-action edit tip" data-tip="Editar"
+                href="<?= BASE_URL ?>?controller=users&action=edit&id=<?= (int)$u['id'] ?>">✏️</a>
+
+            <form method="POST" action="<?= BASE_URL ?>?controller=users&action=destroy" style="display:inline;">
+                <input type="hidden" name="id" value="<?= (int)$u['id'] ?>">
+                <button class="btn-action del tip" data-tip="Eliminar"
+                        onclick="return confirm('¿Eliminar este usuario?');">🗑️</button>
+            </form>
+        </td>
+
       </tr>
     <?php endforeach; ?>
   </tbody>

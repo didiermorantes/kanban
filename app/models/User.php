@@ -58,5 +58,54 @@ class User
     }
 
 
+    public static function countOwners(): int
+    {
+        $stmt = self::db()->query("SELECT COUNT(*) AS c FROM users WHERE role='owner'");
+        $row = $stmt->fetch();
+        return (int)($row['c'] ?? 0);
+    }
+
+    public static function update(int $id, string $name, string $email, string $role): void
+    {
+        $allowed = ['owner','admin','member','viewer'];
+        if (!in_array($role, $allowed, true)) $role = 'member';
+
+        // email duplicado (excepto el mismo usuario)
+        $stmt = self::db()->prepare("SELECT id FROM users WHERE email = ? AND id <> ? LIMIT 1");
+        $stmt->execute([$email, $id]);
+        if ($stmt->fetch()) {
+            throw new Exception("Ya existe un usuario con ese email.");
+        }
+
+        $stmt = self::db()->prepare("
+            UPDATE users
+            SET name = :name, email = :email, role = :role
+            WHERE id = :id
+        ");
+        $stmt->execute([
+            'id' => $id,
+            'name' => $name,
+            'email' => $email,
+            'role' => $role
+        ]);
+    }
+
+    public static function updatePassword(int $id, string $plainPassword): void
+    {
+        if (trim($plainPassword) === '') return;
+
+        $hash = password_hash($plainPassword, PASSWORD_DEFAULT);
+        $stmt = self::db()->prepare("UPDATE users SET password_hash = ? WHERE id = ?");
+        $stmt->execute([$hash, $id]);
+    }
+
+    public static function delete(int $id): void
+    {
+        $stmt = self::db()->prepare("DELETE FROM users WHERE id = ?");
+        $stmt->execute([$id]);
+    }
+
+
+
 
 }
