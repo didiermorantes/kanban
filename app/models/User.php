@@ -21,4 +21,42 @@ class User
         $u = $stmt->fetch();
         return $u ?: null;
     }
+
+
+    public static function all(): array
+    {
+        $stmt = self::db()->query("SELECT id, name, email, role, created_at FROM users ORDER BY id DESC");
+        return $stmt->fetchAll();
+    }
+
+    public static function create(string $name, string $email, string $plainPassword, string $role = 'member'): int
+    {
+        $allowed = ['owner','admin','member','viewer'];
+        if (!in_array($role, $allowed, true)) $role = 'member';
+
+        // evitar duplicado por email
+        $existing = self::findByEmail($email);
+        if ($existing) {
+            throw new Exception("Ya existe un usuario con ese email.");
+        }
+
+        $hash = password_hash($plainPassword, PASSWORD_DEFAULT);
+
+        $stmt = self::db()->prepare("
+            INSERT INTO users (name, email, password_hash, role)
+            VALUES (:name, :email, :password_hash, :role)
+        ");
+
+        $stmt->execute([
+            'name' => $name,
+            'email' => $email,
+            'password_hash' => $hash,
+            'role' => $role
+        ]);
+
+        return (int) self::db()->lastInsertId();
+    }
+
+
+
 }
