@@ -14,6 +14,64 @@
     </div>
 <?php endif; ?>
 
+
+<!-- FILTRO -->
+<form method="GET" action="<?= BASE_URL ?>" style="display:flex;gap:10px;flex-wrap:wrap;align-items:end;margin-bottom:12px;">
+  <input type="hidden" name="controller" value="projects">
+  <input type="hidden" name="action" value="index">
+
+  <div>
+    <label>Buscar</label><br>
+    <input type="text" name="q"
+           value="<?= htmlspecialchars($q ?? '') ?>"
+           placeholder="Nombre o descripción..."
+           style="padding:8px;border-radius:10px;border:1px solid rgba(0,0,0,.2);min-width:260px;">
+  </div>
+
+  <div>
+    <label>Responsable</label><br>
+    <select name="responsible_user_id"
+            style="padding:8px;border-radius:10px;border:1px solid rgba(0,0,0,.2);min-width:220px;">
+      <option value="0">Todos</option>
+      <?php foreach (($responsibleOptions ?? []) as $opt): ?>
+        <option value="<?= (int)$opt['id'] ?>"
+          <?= ((int)($responsibleUserId ?? 0) === (int)$opt['id']) ? 'selected' : '' ?>>
+          <?= htmlspecialchars($opt['name']) ?>
+        </option>
+      <?php endforeach; ?>
+    </select>
+  </div>
+
+
+  <div>
+    <label>Ordenar</label><br>
+    <select name="sort"
+            style="padding:8px;border-radius:10px;border:1px solid rgba(0,0,0,.2);min-width:220px;">
+      <option value="">Más recientes</option>
+      <option value="progress_desc" <?= ($sort === 'progress_desc') ? 'selected' : '' ?>>Avance (alto → bajo)</option>
+      <option value="progress_asc"  <?= ($sort === 'progress_asc') ? 'selected' : '' ?>>Avance (bajo → alto)</option>
+      <option value="name_asc"      <?= ($sort === 'name_asc') ? 'selected' : '' ?>>Nombre (A → Z)</option>
+      <option value="name_desc"     <?= ($sort === 'name_desc') ? 'selected' : '' ?>>Nombre (Z → A)</option>
+    </select>
+  </div>
+
+  <div style="display:flex;align-items:center;gap:8px;padding-top:6px;">
+    <input type="checkbox" id="under50" name="under50" value="1" <?= !empty($under50) ? 'checked' : '' ?>>
+    <label for="under50" style="margin:0;">Solo avance &lt; 50%</label>
+  </div>
+
+
+
+
+
+  <button class="btn-icon" style="width:auto;padding:8px 12px;">Filtrar</button>
+
+  <a class="btn-action view tip" data-tip="Limpiar filtros"
+     href="<?= BASE_URL ?>?controller=projects&action=index">↺</a>
+</form>
+
+<!-- FIN FILTRO -->
+
 <table>
     <thead>
         <tr>

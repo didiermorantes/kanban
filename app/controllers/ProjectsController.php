@@ -13,6 +13,11 @@ require_once __DIR__ . '/../models/User.php';
 
 class ProjectsController extends BaseController
 {
+
+/*
+
+    ANTERIOR INDEX
+
     public function index(): void
     {
         Auth::requireLogin();
@@ -33,6 +38,44 @@ class ProjectsController extends BaseController
 
 
     }
+*/
+
+    public function index(): void
+    {
+        Auth::requireLogin();
+
+        $userId = Auth::userId();
+
+        $q = trim($_GET['q'] ?? '');
+        if ($q === '') $q = null;
+
+        $rid = (int)($_GET['responsible_user_id'] ?? 0);
+        $responsibleUserId = $rid > 0 ? $rid : null;
+
+        $sort = trim($_GET['sort'] ?? '');
+        if ($sort === '') $sort = null;
+
+        $under50 = isset($_GET['under50']) && $_GET['under50'] === '1';
+
+
+
+        $projects = Project::allWithProgressForUser($userId, $q, $responsibleUserId, $sort, $under50);
+
+        $responsibleOptions = Project::responsibleOptionsForUser($userId);
+
+        $this->render('projects/index', [
+        'projects' => $projects,
+        'responsibleOptions' => $responsibleOptions,
+        'q' => $q,
+        'responsibleUserId' => $responsibleUserId,
+        'sort' => $sort,
+        'under50' => $under50
+        ]);
+
+    }
+
+
+
 
     public function show(): void
     {

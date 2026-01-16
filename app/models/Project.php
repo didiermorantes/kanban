@@ -12,6 +12,7 @@ class Project extends Model
     /**
      * Obtiene todos los proyectos con su porcentaje de avance
      */
+
     public static function allWithProgress(): array
     {
         $db = self::db();
@@ -39,6 +40,10 @@ class Project extends Model
         $stmt = $db->query($sql);
         return $stmt->fetchAll();
     }
+
+
+
+
 
     /**
      * Busca un proyecto por id
@@ -164,6 +169,10 @@ public static function update(int $id, string $name, ?string $description, ?int 
 }
 
 
+/*
+
+ANTERIOR ALLWITHPROGRESSFORUSER
+
     public static function allWithProgressForUser(int $userId): array
     {
         $db = self::db();
@@ -191,6 +200,100 @@ public static function update(int $id, string $name, ?string $description, ?int 
             ORDER BY p.id DESC
         ";
 
+        $stmt = $db->prepare($sql);
+        $stmt->execute(['user_id' => $userId]);
+        return $stmt->fetchAll();
+    }
+
+ */   
+
+    public static function allWithProgressForUser(
+        int $userId,
+        ?string $q = null,
+        ?int $responsibleUserId = null,
+        ?string $sort = null,
+        bool $under50 = false
+    ): array
+    {
+        $db = self::db();
+
+        $where = " pm.user_id = :user_id ";
+
+        /* PARA ORDENAMIENTO  POR AVANCE Y FILTRO POR ESTADO */
+        $orderBy = "p.id DESC";
+        if ($sort === 'progress_desc') $orderBy = "progress_percentage DESC, p.id DESC";
+        if ($sort === 'progress_asc')  $orderBy = "progress_percentage ASC, p.id DESC";
+        if ($sort === 'name_asc')      $orderBy = "p.name ASC, p.id DESC";
+        if ($sort === 'name_desc')     $orderBy = "p.name DESC, p.id DESC";
+
+        $having = "";
+        if ($under50) {
+            $having = " HAVING progress_percentage < 50 ";
+        }
+
+        /* FIN PARA ORDENAMIENTO  POR AVANCE Y FILTRO POR ESTADO */
+
+
+
+        $params = ['user_id' => $userId];
+
+        if ($q !== null && trim($q) !== '') {
+            $where .= " AND (p.name LIKE :q OR p.description LIKE :q) ";
+            $params['q'] = '%' . trim($q) . '%';
+        }
+
+        if ($responsibleUserId !== null && $responsibleUserId > 0) {
+            $where .= " AND p.responsible_user_id = :rid ";
+            $params['rid'] = $responsibleUserId;
+        }
+
+
+
+
+
+
+        $sql = "
+            SELECT 
+                p.*,
+                ru.name AS project_responsible_name,
+                COUNT(t.id) AS total_tasks,
+                SUM(CASE WHEN c.is_done = 1 THEN 1 ELSE 0 END) AS done_tasks,
+                CASE 
+                    WHEN COUNT(t.id) = 0 THEN 0
+                    ELSE ROUND(
+                        (SUM(CASE WHEN c.is_done = 1 THEN 1 ELSE 0 END) / COUNT(t.id)) * 100,
+                        2
+                    )
+                END AS progress_percentage
+            FROM projects p
+            JOIN project_members pm ON pm.project_id = p.id
+            LEFT JOIN users ru ON ru.id = p.responsible_user_id
+            LEFT JOIN tasks t ON t.project_id = p.id
+            LEFT JOIN columns c ON c.id = t.column_id
+            WHERE $where
+            GROUP BY p.id
+            $having
+            ORDER BY $orderBy
+        ";
+
+        $stmt = $db->prepare($sql);
+        $stmt->execute($params);
+        return $stmt->fetchAll();
+    }
+
+
+
+    public static function responsibleOptionsForUser(int $userId): array
+    {
+        $db = self::db();
+        $sql = "
+            SELECT DISTINCT u.id, u.name, u.email
+            FROM projects p
+            JOIN project_members pm ON pm.project_id = p.id
+            JOIN users u ON u.id = p.responsible_user_id
+            WHERE pm.user_id = :user_id
+            ORDER BY u.name
+        ";
         $stmt = $db->prepare($sql);
         $stmt->execute(['user_id' => $userId]);
         return $stmt->fetchAll();
