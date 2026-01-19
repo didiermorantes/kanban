@@ -4,7 +4,8 @@
 <h2>Proyecto: <?= htmlspecialchars($project['name']) ?></h2>
 <p>Descripción: <?= nl2br(htmlspecialchars($project['description'] ?? '')) ?></p>
 
-<div class="d-inline-flex">
+<!-- ANTIGUA BOTONERA
+<div class="project-actions">
 
       <div>
           <p>
@@ -19,7 +20,6 @@
       </div>
 
 
-    <!-- Botón Nuevo Proyecto / Editar / Eliminar para owner y admin -->
     <?php if (in_array(Auth::role(), ['owner','admin'], true)): ?>
       <div>
         <a href="<?= BASE_URL ?>?controller=projects&action=report&id=<?= (int)$project['id'] ?>">
@@ -36,6 +36,47 @@
     <?php endif; ?>
 
 </div>
+
+    -->
+
+
+<div class="board-header">
+  <div class="board-title">
+    <h2><?= htmlspecialchars($project['name'] ?? 'Tablero') ?></h2>
+    <div class="board-subtitle">
+      <span class="muted">Proyecto</span>
+      <?php if (!empty($project['project_responsible_name'])): ?>
+        <span class="dot">•</span>
+        <span class="muted">Responsable: <?= htmlspecialchars($project['project_responsible_name']) ?></span>
+      <?php endif; ?>
+    </div>
+  </div>
+
+  <div class="project-actions">
+    <!-- Botón primario: Nueva tarea (abre modal) -->
+    <button type="button" class="btn btn-primary tip" data-tip="Crear tarea" id="openTaskModal">
+      ➕ <span class="btn-text">Nueva tarea</span>
+    </button>
+
+    <!-- Secundarios -->
+    <a class="btn btn-secondary tip" data-tip="Miembros del proyecto"
+       href="<?= BASE_URL ?>?controller=projects&action=members&id=<?= (int)$project['id'] ?>">👥</a>
+
+    <?php if (in_array(Auth::role(), ['owner','admin'], true)): ?>
+      <a class="btn btn-secondary tip" data-tip="Ver métricas"  
+      href="<?= BASE_URL ?>?controller=projects&action=report&id=<?= (int)$project['id'] ?>">📊</a>
+      <a class="btn btn-secondary tip" data-tip="Editar proyecto"
+         href="<?= BASE_URL ?>?controller=projects&action=edit&id=<?= (int)$project['id'] ?>">✏️</a>
+
+      <a class="btn btn-danger tip" data-tip="Eliminar proyecto"
+         href="<?= BASE_URL ?>?controller=projects&action=destroy&id=<?= (int)$project['id'] ?>"
+         onclick="return confirm('¿Eliminar este proyecto?');">🗑️</a>
+    <?php endif; ?>
+  </div>
+</div>
+
+
+
 
 
 <div class="kanban-board" id="kanbanBoard" data-project-id="<?= (int)$project['id'] ?>">

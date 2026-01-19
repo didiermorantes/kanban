@@ -777,7 +777,113 @@
 
 /* fin Grid responsive de proyectos */
 
-        
+
+/* ESTILOS BOTONES DEL TABLERO */
+.project-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;              /* separación horizontal */
+    flex-wrap: wrap;       /* por si la pantalla es pequeña */
+    margin-bottom: 12px;
+}
+
+.project-actions a,
+.project-actions form {
+    margin: 0;
+}
+
+/* FIN ESTILOS BOTONES DEL TABLERO */
+
+
+
+
+/* NUEVOS ESTILOS BOTONES TABLERO */
+/* Header del tablero: título a la izquierda, acciones a la derecha */
+.board-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  margin: 8px 0 14px;
+}
+
+.board-title h2{
+  margin:0;
+  line-height:1.2;
+}
+
+.board-subtitle{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  margin-top:4px;
+  font-size: 13px;
+  opacity: .85;
+}
+
+.board-subtitle .dot{
+  opacity:.6;
+}
+
+.muted{ opacity:.7; }
+
+/* Acciones alineadas horizontalmente */
+.project-actions{
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  gap:8px;
+  flex-wrap:wrap; /* responsive */
+}
+
+/* Botones unificados */
+.btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  height:34px;              /* tamaño único */
+  padding: 0 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(0,0,0,.12);
+  background: rgba(255,255,255,.9);
+  text-decoration:none;
+  cursor:pointer;
+  font-weight:600;
+  line-height: 1;
+  box-shadow: 0 1px 0 rgba(0,0,0,.03);
+  user-select:none;
+}
+
+.btn:active{ transform: translateY(1px); }
+
+/* Variantes */
+.btn-primary{
+  background: rgba(59,130,246,.12);
+  border-color: rgba(59,130,246,.28);
+}
+
+.btn-secondary{
+  background: rgba(255,255,255,.9);
+}
+
+.btn-danger{
+  background: rgba(248,113,113,.14);
+  border-color: rgba(248,113,113,.35);
+}
+
+/* En pantallas pequeñas, que baje bonito */
+@media (max-width: 720px){
+  .board-header{ align-items:flex-start; }
+  .project-actions{ justify-content:flex-start; }
+}
+
+/* Opcional: ocultar texto del botón primario en pantallas muy pequeñas */
+@media (max-width: 420px){
+  .btn-text{ display:none; }
+}
+
+/* FIN NUEVOS ESTILOS BOTONES TABLERO */
     </style>
 </head>
 <body>

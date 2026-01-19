@@ -180,6 +180,7 @@
 </table>
 
 
+<!-- VERSION EN CARDS DEL TABLERO 
 <h2>📁 Proyectos</h2>
 
 <div class="projects-grid">
@@ -260,3 +261,4 @@
   <?php endforeach; ?>
 </div>
 
+  -->

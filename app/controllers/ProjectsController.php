@@ -112,7 +112,8 @@ class ProjectsController extends BaseController
         $this->render('projects/show', [
             'project'       => $project,
             'columns'       => $columns,
-            'tasksByColumn' => $tasksByColumn
+            'tasksByColumn' => $tasksByColumn,
+            'members' => $members
         ]);
     }
 
@@ -233,6 +234,8 @@ class ProjectsController extends BaseController
             exit;
         }
 
+        $name = trim($_POST['name'] ?? '');
+
         if ($name === '') {
             // Puedes manejarlo con flash/toast luego
             http_response_code(400);
@@ -243,7 +246,7 @@ class ProjectsController extends BaseController
         // ✅ permiso antes de guardar (no después)
         ProjectMember::ensureMember($projectId, Auth::userId());
 
-        $name = trim($_POST['name'] ?? '');
+
         $description = trim($_POST['description'] ?? '');
         $responsibleUserId = (int)($_POST['responsible_user_id'] ?? 0);
         if ($responsibleUserId <= 0) $responsibleUserId = null;

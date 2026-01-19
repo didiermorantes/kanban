@@ -19,7 +19,6 @@ class TasksController extends BaseController
         $projectId   = (int)($_POST['project_id'] ?? 0);
         $columnId    = (int)($_POST['column_id'] ?? 0);
         $title       = trim($_POST['title'] ?? '');
-        $responsible = trim($_POST['responsible'] ?? '');
         $description = trim($_POST['description'] ?? '');
 
         if ($projectId <= 0 || $columnId <= 0) {
@@ -47,7 +46,12 @@ class TasksController extends BaseController
     // POST <?= BASE_URL ?controller=tasks&action=move
     public function move(): void
     {
+
+        Auth::requireLogin();
         $projectId = (int)($_POST['project_id'] ?? 0);
+        ProjectMember::ensureMember($projectId, Auth::userId());
+
+
         $taskId    = (int)($_POST['task_id'] ?? 0);
         $columnId  = (int)($_POST['column_id'] ?? 0);
 
@@ -58,7 +62,8 @@ class TasksController extends BaseController
         }
 
         // Mover
-        Task::moveToColumn($taskId, $columnId);
+        Task::moveToColumn($taskId, $columnId, Auth::userId());
+
 
         // Reordenar columna destino (la manda al final)
         $tasks = Task::getByProject($projectId);
@@ -76,8 +81,15 @@ class TasksController extends BaseController
         // GET ?controller=tasks&action=edit&id=XX&project_id=YY
     public function edit(): void
     {
-        $taskId    = (int)($_GET['id'] ?? 0);
+
+        Auth::requireLogin();
         $projectId = (int)($_GET['project_id'] ?? 0);
+        ProjectMember::ensureMember($projectId, Auth::userId());
+
+
+
+        $taskId    = (int)($_GET['id'] ?? 0);
+       
 
         if ($taskId <= 0 || $projectId <= 0) {
             throw new Exception("Datos inválidos para editar tarea");
@@ -97,11 +109,27 @@ class TasksController extends BaseController
     // POST ?controller=tasks&action=update
     public function update(): void
     {
+        Auth::requireLogin();
+        $projectId = (int)($_POST['project_id'] ?? 0);
+        ProjectMember::ensureMember($projectId, Auth::userId());
+
+
         $taskId    = (int)($_POST['id'] ?? 0);
         $projectId = (int)($_POST['project_id'] ?? 0);
         $title       = trim($_POST['title'] ?? '');
-        $responsible = trim($_POST['responsible'] ?? '');
         $description = trim($_POST['description'] ?? '');
+
+        $responsibleUserId = (int)($_POST['responsible_user_id'] ?? 0);
+        if ($responsibleUserId <= 0) $responsibleUserId = null;
+
+        if ($responsibleUserId !== null) {
+            if (!ProjectMember::roleFor($projectId, $responsibleUserId)) {
+                $this->setFlash('error', 'Responsable inválido (no es miembro del proyecto).');
+                header('Location: ' . BASE_URL . '?controller=projects&action=show&id=' . $projectId);
+                exit;
+            }
+        }
+
 
         if ($taskId <= 0 || $projectId <= 0 || $title === '') {
             $this->setFlash('error', 'Datos inválidos para actualizar la tarea.');
@@ -109,7 +137,7 @@ class TasksController extends BaseController
             exit;
         }
 
-        Task::update($taskId, $title, $responsible, $description);
+        Task::update($taskId, $title, $responsibleUserId , $description);
 
         $this->setFlash('success', 'Tarea actualizada correctamente.');
 
@@ -120,6 +148,8 @@ class TasksController extends BaseController
     // POST ?controller=tasks&action=destroy
     public function destroy(): void
     {
+        Auth::requireLogin();
+
         $taskId    = (int)($_POST['id'] ?? 0);
         $projectId = (int)($_POST['project_id'] ?? 0);
 
@@ -128,6 +158,8 @@ class TasksController extends BaseController
             header('Location: ' . BASE_URL . '?controller=projects&action=show&id=' . $projectId);
             exit;
         }
+
+        ProjectMember::ensureMember($projectId, Auth::userId());
 
         Task::delete($taskId);
         $this->setFlash('success', 'Tarea eliminada correctamente.');
@@ -139,6 +171,10 @@ class TasksController extends BaseController
     // POST < BASE_URL >?controller=tasks&action=moveAjax
     public function moveAjax(): void
     {
+        Auth::requireLogin();
+        $projectId = (int)($_POST['project_id'] ?? 0);
+        ProjectMember::ensureMember($projectId, Auth::userId());
+
         header('Content-Type: application/json; charset=utf-8');
 
         try {
@@ -165,7 +201,9 @@ class TasksController extends BaseController
             $db->beginTransaction();
 
             // 1) mover tarea (maneja completed_at si cae en Hecho)
-            Task::moveToColumn($taskId, $toColumn);
+            //Task::moveToColumn($taskId, $toColumn);
+            Task::moveToColumn($taskId, $toColumn, Auth::userId());
+
 
             // 2) reordenar destino si nos enviaron orden
             if (!empty($toIds)) {
@@ -194,23 +232,36 @@ class TasksController extends BaseController
 
     public function updateInlineAjax(): void
     {
+        Auth::requireLogin();
+        $projectId = (int)($_POST['project_id'] ?? 0);
+        ProjectMember::ensureMember($projectId, Auth::userId());
+
         header('Content-Type: application/json; charset=utf-8');
 
         try {
             $taskId = (int)($_POST['task_id'] ?? 0);
-            $title = trim($_POST['title'] ?? '');
-            $responsible = trim($_POST['responsible'] ?? '');
+            $title  = trim($_POST['title'] ?? '');
+
+            $responsibleUserId = (int)($_POST['responsible_user_id'] ?? 0);
+            if ($responsibleUserId <= 0) $responsibleUserId = null;
 
             if ($taskId <= 0 || $title === '') {
                 throw new Exception("Datos insuficientes para actualizar");
             }
 
-            Task::updateTitleResponsible($taskId, $title, $responsible);
+            // validar que el responsable pertenezca al proyecto
+            if ($responsibleUserId !== null) {
+                if (!ProjectMember::roleFor($projectId, $responsibleUserId)) {
+                    throw new Exception("Responsable inválido (no es miembro del proyecto)");
+                }
+            }
+
+            Task::updateTitleResponsible($taskId, $title, $responsibleUserId);
 
             echo json_encode([
                 'ok' => true,
                 'title' => $title,
-                'responsible' => $responsible
+                'responsible_user_id' => $responsibleUserId
             ]);
             exit;
 
@@ -220,6 +271,8 @@ class TasksController extends BaseController
             exit;
         }
     }
+
+
 
 
 }

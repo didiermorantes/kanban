@@ -108,9 +108,12 @@ class Task extends Model
      * Mueve una tarea a otra columna.
      * Si la columna destino es "Hecho" (is_done = 1), marca completed_at.
      */
-    public static function moveToColumn(int $taskId, int $newColumnId): void
+    public static function moveToColumn(int $taskId, int $newColumnId, ?int $movedBy = null): void
     {
         $db = self::db();
+
+        $movedBy = $movedBy ?: null;
+
 
         // Saber si la columna destino es de finalización
         $stmtCol = $db->prepare("
@@ -155,14 +158,15 @@ class Task extends Model
 
         // registramos el movimiento del update para metricas , luego del update
         $stmtMove = $db->prepare("
-        INSERT INTO task_movements (task_id, project_id, from_column_id, to_column_id, moved_at)
-        VALUES (:task_id, :project_id, :from_col, :to_col, NOW())
+        INSERT INTO task_movements (task_id, project_id, from_column_id, to_column_id, moved_at, moved_by)
+        VALUES (:task_id, :project_id, :from_col, :to_col, NOW(), :moved_by)
         ");
         $stmtMove->execute([
         'task_id' => $taskId,
         'project_id' => $projectId,
         'from_col' => $fromColumnId,
-        'to_col' => $newColumnId
+        'to_col' => $newColumnId,
+        'moved_by'  => $movedBy
         ]);
 
 
@@ -178,24 +182,25 @@ class Task extends Model
         return $task ?: null;
     }
 
-    public static function update(int $id, string $title, ?string $responsible, ?string $description): void
+
+    public static function update(int $id, string $title, ?int $responsibleUserId, ?string $description): void
     {
         $db = self::db();
         $stmt = $db->prepare("
             UPDATE tasks
             SET title = :title,
-                responsible = :responsible,
+                responsible_user_id = :rid,
                 description = :description
             WHERE id = :id
         ");
-
         $stmt->execute([
-            'id'          => $id,
-            'title'       => $title,
-            'responsible' => $responsible ?: null,
-            'description' => $description,
+            'id' => $id,
+            'title' => $title,
+            'rid' => $responsibleUserId,
+            'description' => $description ?: null
         ]);
     }
+
 
 
     public static function delete(int $id): void
@@ -238,22 +243,22 @@ class Task extends Model
         self::moveToColumn($taskId, $newColumnId);
     }
 
-    public static function updateTitleResponsible(int $id, string $title, ?string $responsible): void
+    public static function updateTitleResponsible(int $id, string $title, ?int $responsibleUserId): void
     {
-        $db = self::db();
-        $stmt = $db->prepare("
-            UPDATE tasks
-            SET title = :title,
-                responsible = :responsible
-            WHERE id = :id
-        ");
-
-        $stmt->execute([
-            'id' => $id,
-            'title' => $title,
-            'responsible' => $responsible ?: null
-        ]);
+    $db = self::db();
+    $stmt = $db->prepare("
+        UPDATE tasks
+        SET title = :title,
+            responsible_user_id = :rid
+        WHERE id = :id
+    ");
+    $stmt->execute([
+        'id' => $id,
+        'title' => $title,
+        'rid' => $responsibleUserId
+    ]);
     }
+
 
     public static function countsByProjectIds(array $projectIds): array
     {

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 13-01-2026 a las 23:05:46
+-- Tiempo de generación: 19-01-2026 a las 17:35:50
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -57,7 +57,13 @@ INSERT INTO `columns` (`id`, `project_id`, `name`, `position`, `is_done`) VALUES
 (24, 8, 'Hecho', 3, 1),
 (25, 9, 'Por hacer', 1, 0),
 (26, 9, 'En progreso', 2, 0),
-(27, 9, 'Hecho', 3, 1);
+(27, 9, 'Hecho', 3, 1),
+(34, 12, 'Por hacer', 1, 0),
+(35, 12, 'En progreso', 2, 0),
+(36, 12, 'Hecho', 3, 1),
+(37, 13, 'Por hacer', 1, 0),
+(38, 13, 'En progreso', 2, 0),
+(39, 13, 'Hecho', 3, 1);
 
 -- --------------------------------------------------------
 
@@ -85,7 +91,9 @@ INSERT INTO `projects` (`id`, `created_by`, `name`, `responsible`, `responsible_
 (3, NULL, 'Chatbot', NULL, NULL, 'descripción', '2025-12-11 12:15:02'),
 (4, NULL, 'Proyecto Universidad Nacional Gestión del Riesgo', NULL, NULL, 'Proyecto Universidad Nacional Gestión del Riesgo', '2025-12-11 15:09:55'),
 (8, 1, 'PROYECTIN', NULL, NULL, 'a', '2025-12-23 15:51:19'),
-(9, 1, 'Prueba Auditoria D', 'Cristian Ochoa', 1, 'Prueba Auditoria', '2025-12-23 15:54:29');
+(9, 1, 'Prueba Auditoria D', 'Cristian Ochoa', 1, 'Prueba Auditoria', '2025-12-23 15:54:29'),
+(12, 1, 'Proyecto 15 Enero 2026', NULL, NULL, 'Proyecto 15 Enero 2026', '2026-01-15 11:12:23'),
+(13, 1, 'Proyecto 16 Enero 2025', NULL, 80824837, 'una prueba', '2026-01-16 16:25:39');
 
 -- --------------------------------------------------------
 
@@ -111,7 +119,13 @@ INSERT INTO `project_members` (`project_id`, `user_id`, `role`, `created_at`) VA
 (3, 1, 'owner', '2025-12-23 15:48:34'),
 (4, 1, 'owner', '2025-12-23 15:48:34'),
 (8, 1, 'owner', '2025-12-23 15:51:19'),
-(9, 1, 'owner', '2025-12-23 15:54:29');
+(9, 1, 'owner', '2025-12-23 15:54:29'),
+(12, 1, 'owner', '2026-01-15 17:13:11'),
+(12, 2, 'viewer', '2026-01-15 11:13:05'),
+(12, 80824837, 'owner', '2026-01-15 16:51:42'),
+(13, 1, 'owner', '2026-01-16 16:25:39'),
+(13, 2, 'admin', '2026-01-16 16:27:14'),
+(13, 80824837, 'owner', '2026-01-16 16:26:01');
 
 -- --------------------------------------------------------
 
@@ -146,7 +160,7 @@ INSERT INTO `tasks` (`id`, `project_id`, `column_id`, `title`, `responsible`, `r
 (4, 2, 6, 'Crear base de datos', NULL, NULL, 'Usar motor mysql', 8, '2025-12-11 12:10:31', NULL, '2025-12-22 14:39:49', NULL, NULL),
 (5, 2, 6, 'Crear patrón MVC', 'Didier Morantes', NULL, 'Utilizar patrón MVC para mantenibilidad', 9, '2025-12-11 12:10:55', NULL, '2025-12-22 13:48:08', NULL, NULL),
 (6, 2, 6, 'Crear Front End', 'Didier Morantes', NULL, 'Utilizar public/index.php como punto de entrada', 2, '2025-12-11 12:11:17', NULL, '2025-12-22 14:40:02', NULL, NULL),
-(7, 2, 4, 'Crear Back End', NULL, NULL, 'Crear controladores para gestionar la información procesada', 1, '2025-12-11 12:11:38', NULL, NULL, NULL, NULL),
+(7, 2, 4, 'Crear Back End', 'ad', NULL, 'Crear controladores para gestionar la información procesada', 1, '2025-12-11 12:11:38', NULL, NULL, NULL, NULL),
 (8, 3, 7, 'recolección de requerimientos', NULL, NULL, 'es una pequeña recolección de requerimientos', 1, '2025-12-11 12:15:16', NULL, NULL, NULL, NULL),
 (9, 3, 8, 'creación de diagramas', NULL, NULL, 'UML', 1, '2025-12-11 12:15:31', NULL, NULL, NULL, NULL),
 (10, 1, 3, 'Definir estilos', NULL, NULL, 'Definir estilos CSS', 2, '2025-12-11 14:37:18', NULL, '2025-12-22 14:41:05', NULL, NULL),
@@ -165,7 +179,9 @@ INSERT INTO `tasks` (`id`, `project_id`, `column_id`, `title`, `responsible`, `r
 (23, 2, 6, 'Tarea 6', 'Didier Morantes', NULL, 'Tarea 6', 7, '2025-12-18 14:17:14', NULL, '2025-12-22 13:47:21', NULL, NULL),
 (30, 9, 27, 'Comenzar', 'D\n                                          Didier Morantes', NULL, 'Elfar', 1, '2025-12-23 15:54:42', NULL, '2026-01-13 14:55:02', 1, NULL),
 (31, 9, 27, 'progresando', 'Cristian Ochoa', NULL, 'Cri', 2, '2025-12-23 15:57:13', NULL, '2025-12-23 15:57:26', 1, NULL),
-(32, 8, 24, 'COMENZAR', 'AD', NULL, 'DES', 1, '2026-01-13 16:14:12', NULL, '2026-01-13 16:14:30', 1, NULL);
+(32, 8, 24, 'COMENZAR', 'AD', NULL, 'DES', 1, '2026-01-13 16:14:12', NULL, '2026-01-13 16:14:30', 1, NULL),
+(33, 12, 35, 'Una tareita', NULL, NULL, 'una tareita', 1, '2026-01-15 11:15:20', NULL, NULL, 2, NULL),
+(34, 13, 37, 'Tarea 16 Enero', NULL, NULL, 'prueba', 1, '2026-01-16 16:25:52', NULL, NULL, 1, NULL);
 
 -- --------------------------------------------------------
 
@@ -372,7 +388,17 @@ INSERT INTO `task_movements` (`id`, `task_id`, `project_id`, `from_column_id`, `
 (198, 30, 9, 26, 27, '2026-01-13 14:55:02', NULL),
 (199, 32, 8, NULL, 22, '2026-01-13 16:14:12', 1),
 (200, 32, 8, 22, 23, '2026-01-13 16:14:24', NULL),
-(201, 32, 8, 23, 24, '2026-01-13 16:14:31', NULL);
+(201, 32, 8, 23, 24, '2026-01-13 16:14:31', NULL),
+(202, 33, 12, NULL, 34, '2026-01-15 11:15:20', 2),
+(203, 33, 12, 34, 35, '2026-01-15 11:15:44', NULL),
+(204, 33, 12, 35, 36, '2026-01-15 11:16:20', NULL),
+(205, 33, 12, 36, 35, '2026-01-16 14:47:35', NULL),
+(206, 33, 12, 35, 34, '2026-01-16 14:47:36', NULL),
+(207, 33, 12, 34, 36, '2026-01-16 14:47:47', NULL),
+(208, 33, 12, 36, 35, '2026-01-16 14:48:25', NULL),
+(209, 33, 12, 35, 36, '2026-01-16 14:48:31', NULL),
+(210, 33, 12, 36, 35, '2026-01-16 16:18:42', NULL),
+(211, 34, 13, NULL, 37, '2026-01-16 16:25:52', 1);
 
 -- --------------------------------------------------------
 
@@ -385,6 +411,7 @@ CREATE TABLE `users` (
   `name` varchar(120) NOT NULL,
   `email` varchar(190) NOT NULL,
   `password_hash` varchar(255) NOT NULL,
+  `role` enum('owner','admin','member','viewer') NOT NULL DEFAULT 'member',
   `created_at` datetime NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -392,9 +419,11 @@ CREATE TABLE `users` (
 -- Volcado de datos para la tabla `users`
 --
 
-INSERT INTO `users` (`id`, `name`, `email`, `password_hash`, `created_at`) VALUES
-(1, 'Elfar Morantes', 'elfar.morantes@cundinamarca.gov.co', '$2y$10$ln5hjmX7WCv7imXLh/TLt.5mFPEac8yEezEPgEfHK.XLzVbUrHZIS', '2025-12-23 15:20:48'),
-(2, 'prueba', 'profesordidiermorantes@gmail.com', '$2y$10$e73zC7SGWEuM4R3hEQeYqe4wcc7mZPGg1VXfCVYuFpHKz69xhbubm', '2026-01-13 16:27:46');
+INSERT INTO `users` (`id`, `name`, `email`, `password_hash`, `role`, `created_at`) VALUES
+(1, 'Elfar Morantes', 'elfar.morantes@cundinamarca.gov.co', '$2y$10$ln5hjmX7WCv7imXLh/TLt.5mFPEac8yEezEPgEfHK.XLzVbUrHZIS', 'admin', '2025-12-23 15:20:48'),
+(2, 'prueba', 'profesordidiermorantes@gmail.com', '$2y$10$e73zC7SGWEuM4R3hEQeYqe4wcc7mZPGg1VXfCVYuFpHKz69xhbubm', 'member', '2026-01-13 16:27:46'),
+(80824835, 'yeyo', 'yeyo@gmail.com', '$2y$10$jvUUNW8Kkn289297EtSYH.dZ2FtlE30CT0OW.yYNSP.XencQ6z//m', 'admin', '2026-01-15 16:06:04'),
+(80824837, 'salome', 'salo@gmail.com', '$2y$10$DjrAi5vi5gY3abrCc8bu9.ukVAVhOtDXlsrASKCOoU7cYRdpvDMwm', 'admin', '2026-01-15 16:51:16');
 
 --
 -- Índices para tablas volcadas
@@ -458,31 +487,31 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT de la tabla `columns`
 --
 ALTER TABLE `columns`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
 
 --
 -- AUTO_INCREMENT de la tabla `projects`
 --
 ALTER TABLE `projects`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT de la tabla `tasks`
 --
 ALTER TABLE `tasks`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
 
 --
 -- AUTO_INCREMENT de la tabla `task_movements`
 --
 ALTER TABLE `task_movements`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=202;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=212;
 
 --
 -- AUTO_INCREMENT de la tabla `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=80824835;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=80824838;
 
 --
 -- Restricciones para tablas volcadas
