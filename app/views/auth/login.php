@@ -1,18 +1,26 @@
-<h2>Iniciar sesión</h2>
-<?php if (!empty($error)): ?>
-  <div style="padding:10px;border-radius:10px;background:#fee2e2;border:1px solid #fecaca;">
-    <?= htmlspecialchars($error) ?>
-  </div>
-<?php endif; ?>
+<div class="auth-card">
+  <h2 class="auth-title">Iniciar sesión</h2>
+  <p class="auth-subtitle">Accede para gestionar tus proyectos y tareas.</p>
 
-<form method="POST" style="max-width:360px;margin-top:12px;">
-  <div style="margin-bottom:10px;">
-    <label>Email</label>
-    <input name="email" type="email" required style="width:100%;padding:8px;border-radius:10px;border:1px solid rgba(0,0,0,.2);">
-  </div>
-  <div style="margin-bottom:10px;">
-    <label>Contraseña</label>
-    <input name="password" type="password" required style="width:100%;padding:8px;border-radius:10px;border:1px solid rgba(0,0,0,.2);">
-  </div>
-  <button type="submit" class="btn-icon" style="width:auto;padding:8px 12px;">Entrar</button>
-</form>
+  <?php if (!empty($error)): ?>
+    <div style="padding:10px;border-radius:12px;background:#fee2e2;border:1px solid #fecaca;margin-bottom:12px;">
+      <?= htmlspecialchars($error) ?>
+    </div>
+  <?php endif; ?>
+
+  <form method="POST" autocomplete="on">
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input id="email" name="email" type="email" required class="input" placeholder="tu@correo.com">
+    </div>
+
+    <div class="form-group">
+      <label for="password">Contraseña</label>
+      <input id="password" name="password" type="password" required class="input" placeholder="••••••••">
+    </div>
+
+    <div class="auth-actions">
+      <button type="submit" class="btn btn-primary">Entrar</button>
+    </div>
+  </form>
+</div>

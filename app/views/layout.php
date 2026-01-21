@@ -8,7 +8,41 @@
     <title>Kanban PHP</title>
     <style>
         body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background: #f5f5f5; }
-        header { margin-bottom: 20px; }
+        
+        /* 🔐 Login (pantalla centrada) */
+        .auth-body { padding: 0 !important; }
+        .auth-main {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            background: linear-gradient(135deg, rgba(59,130,246,.10), rgba(16,185,129,.08));
+        }
+        .auth-card {
+            width: 100%;
+            max-width: 420px;
+            background: rgba(255,255,255,.95);
+            border: 1px solid rgba(0,0,0,.08);
+            border-radius: 16px;
+            padding: 22px;
+            box-shadow: 0 16px 50px rgba(0,0,0,.10);
+        }
+        .auth-title { margin: 0 0 4px; }
+        .auth-subtitle { margin: 0 0 16px; opacity: .75; font-size: 13px; }
+        .form-group { margin-bottom: 12px; }
+        .form-group label { display:block; margin-bottom: 6px; font-weight: 600; }
+        .input {
+            width: 100%;
+            padding: 10px 12px;
+            border-radius: 12px;
+            border: 1px solid rgba(0,0,0,.18);
+            background: rgba(255,255,255,.98);
+            outline: none;
+        }
+        .input:focus { border-color: rgba(59,130,246,.55); box-shadow: 0 0 0 3px rgba(59,130,246,.15); }
+        .auth-actions { display:flex; align-items:center; justify-content:flex-end; gap:10px; margin-top: 4px; }
+header { margin-bottom: 20px; }
         a { text-decoration: none; color: #007bff; }
         a:hover { text-decoration: underline; }
 
@@ -886,7 +920,9 @@
 /* FIN NUEVOS ESTILOS BOTONES TABLERO */
     </style>
 </head>
-<body>
+<?php $isAuthPage = (strpos($viewFile, '/auth/login.php') !== false); ?>
+<body class="<?= $isAuthPage ? 'auth-body' : '' ?>">
+<?php if (!$isAuthPage): ?>
 <header>
 
 
@@ -934,8 +970,9 @@
 
     <hr>
 </header>
+<?php endif; ?>
 
-<main>
+<main class="<?= $isAuthPage ? 'auth-main' : '' ?>">
     <?php if (!empty($flash)): ?>
         <div class="flash flash-<?= htmlspecialchars($flash['type']) ?>">
             <?= htmlspecialchars($flash['message']) ?>
