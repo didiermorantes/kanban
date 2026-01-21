@@ -29,8 +29,6 @@ Toda la documentación técnica se encuentra en la carpeta:
 
 docs/
 
-yaml
-Copiar código
 
 Incluye:
 - Arquitectura del sistema

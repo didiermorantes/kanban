@@ -23,8 +23,6 @@ Copiar código
 5. Acceder a:
 http://localhost/kanban/public
 
-yaml
-Copiar código
 
 ---
 
