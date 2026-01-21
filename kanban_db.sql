@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 19-01-2026 a las 17:35:50
+-- Tiempo de generación: 21-01-2026 a las 21:55:29
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -63,7 +63,13 @@ INSERT INTO `columns` (`id`, `project_id`, `name`, `position`, `is_done`) VALUES
 (36, 12, 'Hecho', 3, 1),
 (37, 13, 'Por hacer', 1, 0),
 (38, 13, 'En progreso', 2, 0),
-(39, 13, 'Hecho', 3, 1);
+(39, 13, 'Hecho', 3, 1),
+(40, 14, 'Por hacer', 1, 0),
+(41, 14, 'En progreso', 2, 0),
+(42, 14, 'Hecho', 3, 1),
+(43, 15, 'Por hacer', 1, 0),
+(44, 15, 'En progreso', 2, 0),
+(45, 15, 'Hecho', 3, 1);
 
 -- --------------------------------------------------------
 
@@ -93,7 +99,9 @@ INSERT INTO `projects` (`id`, `created_by`, `name`, `responsible`, `responsible_
 (8, 1, 'PROYECTIN', NULL, NULL, 'a', '2025-12-23 15:51:19'),
 (9, 1, 'Prueba Auditoria D', 'Cristian Ochoa', 1, 'Prueba Auditoria', '2025-12-23 15:54:29'),
 (12, 1, 'Proyecto 15 Enero 2026', NULL, NULL, 'Proyecto 15 Enero 2026', '2026-01-15 11:12:23'),
-(13, 1, 'Proyecto 16 Enero 2025', NULL, 80824837, 'una prueba', '2026-01-16 16:25:39');
+(13, 1, 'Proyecto 16 Enero 2025', NULL, 80824837, 'una prueba', '2026-01-16 16:25:39'),
+(14, 1, 'Proyecto 19 Enero 2026', NULL, 80824838, 'Prueba 19 Enero 2026', '2026-01-19 11:40:11'),
+(15, 1, 'Proyecto 21 Enero 2026', NULL, 1, 'Prueba 21 Enero', '2026-01-21 11:16:02');
 
 -- --------------------------------------------------------
 
@@ -125,7 +133,13 @@ INSERT INTO `project_members` (`project_id`, `user_id`, `role`, `created_at`) VA
 (12, 80824837, 'owner', '2026-01-15 16:51:42'),
 (13, 1, 'owner', '2026-01-16 16:25:39'),
 (13, 2, 'admin', '2026-01-16 16:27:14'),
-(13, 80824837, 'owner', '2026-01-16 16:26:01');
+(13, 80824837, 'owner', '2026-01-16 16:26:01'),
+(14, 1, 'owner', '2026-01-19 11:40:11'),
+(14, 2, 'member', '2026-01-19 11:40:55'),
+(14, 80824837, 'viewer', '2026-01-19 15:54:32'),
+(14, 80824838, 'member', '2026-01-21 11:57:05'),
+(15, 1, 'owner', '2026-01-21 11:16:02'),
+(15, 80824837, 'member', '2026-01-21 11:52:38');
 
 -- --------------------------------------------------------
 
@@ -181,7 +195,11 @@ INSERT INTO `tasks` (`id`, `project_id`, `column_id`, `title`, `responsible`, `r
 (31, 9, 27, 'progresando', 'Cristian Ochoa', NULL, 'Cri', 2, '2025-12-23 15:57:13', NULL, '2025-12-23 15:57:26', 1, NULL),
 (32, 8, 24, 'COMENZAR', 'AD', NULL, 'DES', 1, '2026-01-13 16:14:12', NULL, '2026-01-13 16:14:30', 1, NULL),
 (33, 12, 35, 'Una tareita', NULL, NULL, 'una tareita', 1, '2026-01-15 11:15:20', NULL, NULL, 2, NULL),
-(34, 13, 37, 'Tarea 16 Enero', NULL, NULL, 'prueba', 1, '2026-01-16 16:25:52', NULL, NULL, 1, NULL);
+(34, 13, 37, 'Tarea 16 Enero', NULL, NULL, 'prueba', 1, '2026-01-16 16:25:52', NULL, NULL, 1, NULL),
+(35, 14, 42, 'Primera Tarea', NULL, NULL, 'Describe', 2, '2026-01-19 11:40:29', NULL, '2026-01-19 15:53:02', 1, NULL),
+(36, 14, 42, 'fINALIZANDO', NULL, NULL, 'DETALLITOS', 1, '2026-01-19 15:51:11', NULL, '2026-01-21 11:57:31', 1, NULL),
+(37, 15, 43, 'Una Tareita', NULL, 1, 'Le agrego responsable', 1, '2026-01-21 11:16:34', NULL, NULL, 1, NULL),
+(38, 15, 45, 'Tarea para salome', NULL, 80824837, 'Una tarea de salo', 1, '2026-01-21 11:53:00', NULL, '2026-01-21 11:55:05', 1, NULL);
 
 -- --------------------------------------------------------
 
@@ -398,7 +416,17 @@ INSERT INTO `task_movements` (`id`, `task_id`, `project_id`, `from_column_id`, `
 (208, 33, 12, 36, 35, '2026-01-16 14:48:25', NULL),
 (209, 33, 12, 35, 36, '2026-01-16 14:48:31', NULL),
 (210, 33, 12, 36, 35, '2026-01-16 16:18:42', NULL),
-(211, 34, 13, NULL, 37, '2026-01-16 16:25:52', 1);
+(211, 34, 13, NULL, 37, '2026-01-16 16:25:52', 1),
+(212, 35, 14, NULL, 40, '2026-01-19 11:40:29', 1),
+(213, 35, 14, 40, 41, '2026-01-19 12:19:10', 1),
+(214, 36, 14, NULL, 40, '2026-01-19 15:51:11', 1),
+(215, 35, 14, 41, 42, '2026-01-19 15:53:02', 1),
+(216, 36, 14, 40, 41, '2026-01-19 15:53:09', 1),
+(217, 37, 15, NULL, 43, '2026-01-21 11:16:34', 1),
+(218, 38, 15, NULL, 43, '2026-01-21 11:53:00', 1),
+(219, 38, 15, 43, 44, '2026-01-21 11:53:04', 1),
+(220, 38, 15, 44, 45, '2026-01-21 11:55:05', 1),
+(221, 36, 14, 41, 42, '2026-01-21 11:57:31', 80824838);
 
 -- --------------------------------------------------------
 
@@ -423,7 +451,8 @@ INSERT INTO `users` (`id`, `name`, `email`, `password_hash`, `role`, `created_at
 (1, 'Elfar Morantes', 'elfar.morantes@cundinamarca.gov.co', '$2y$10$ln5hjmX7WCv7imXLh/TLt.5mFPEac8yEezEPgEfHK.XLzVbUrHZIS', 'admin', '2025-12-23 15:20:48'),
 (2, 'prueba', 'profesordidiermorantes@gmail.com', '$2y$10$e73zC7SGWEuM4R3hEQeYqe4wcc7mZPGg1VXfCVYuFpHKz69xhbubm', 'member', '2026-01-13 16:27:46'),
 (80824835, 'yeyo', 'yeyo@gmail.com', '$2y$10$jvUUNW8Kkn289297EtSYH.dZ2FtlE30CT0OW.yYNSP.XencQ6z//m', 'admin', '2026-01-15 16:06:04'),
-(80824837, 'salome', 'salo@gmail.com', '$2y$10$DjrAi5vi5gY3abrCc8bu9.ukVAVhOtDXlsrASKCOoU7cYRdpvDMwm', 'admin', '2026-01-15 16:51:16');
+(80824837, 'salome', 'salo@gmail.com', '$2y$10$DjrAi5vi5gY3abrCc8bu9.ukVAVhOtDXlsrASKCOoU7cYRdpvDMwm', 'admin', '2026-01-15 16:51:16'),
+(80824838, 'nubia', 'nubia@gmail.com', '$2y$10$uVHzeMEHc19Eu9RdXkYcmOx/nPHznuAGS/GbqFJtDh4XB0BRRPAqa', 'member', '2026-01-21 11:56:34');
 
 --
 -- Índices para tablas volcadas
@@ -487,31 +516,31 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT de la tabla `columns`
 --
 ALTER TABLE `columns`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=46;
 
 --
 -- AUTO_INCREMENT de la tabla `projects`
 --
 ALTER TABLE `projects`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT de la tabla `tasks`
 --
 ALTER TABLE `tasks`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39;
 
 --
 -- AUTO_INCREMENT de la tabla `task_movements`
 --
 ALTER TABLE `task_movements`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=212;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=222;
 
 --
 -- AUTO_INCREMENT de la tabla `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=80824838;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=80824839;
 
 --
 -- Restricciones para tablas volcadas

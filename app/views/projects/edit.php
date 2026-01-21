@@ -3,11 +3,11 @@
 ?>
 <h2>Editar proyecto</h2>
 
-<p>
-    <a href="<?= BASE_URL ?>?controller=projects&action=index" class="btn-secondary">
-        ← Volver al listado de proyectos
-    </a>
-</p>
+<div style="margin-top:12px;" class="project-actions">
+  <a class="btn-action view tip"
+     data-tip="Volver al tablero"
+     href="<?= BASE_URL ?>?controller=projects&action=show&id=<?= (int)$project['id'] ?>">👁️</a>
+</div>
 
 <form method="post" action="<?= BASE_URL ?>?controller=projects&action=update">
     <input type="hidden" name="id" value="<?= (int)$project['id'] ?>">

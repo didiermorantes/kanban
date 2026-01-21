@@ -958,11 +958,13 @@ header { margin-bottom: 20px; }
 
     <nav>
         <a href="<?= BASE_URL ?>?controller=projects&action=index">Proyectos</a>
+        <!--
             <?php if (Auth::check() && in_array(Auth::role(), ['owner','admin'], true)): ?>
               <a href="<?= BASE_URL ?>?controller=users&action=index"
                 class="btn-action edit tip"
                 data-tip="Administrar usuarios">👤</a>
             <?php endif; ?>
+          -->
     </nav>
 
 

@@ -7,11 +7,23 @@
 <!-- Botón Nuevo Proyecto / Editar / Eliminar solo para owner y admin -->
 <?php if (in_array(Auth::role(), ['owner','admin'], true)): ?>
   
+  <div class="project-actions">
     <div class="top-actions">
         <a href="<?= BASE_URL ?>?controller=projects&action=create">
-            <button>+ Nuevo proyecto</button>
+            <button type="button" class="btn btn-primary tip" data-tip="Crear proyecto">➕ <span class="btn-text">Nuevo proyecto</span></button>
         </a>
     </div>
+
+    
+    <nav>
+            <?php if (Auth::check() && in_array(Auth::role(), ['owner','admin'], true)): ?>
+              <a href="<?= BASE_URL ?>?controller=users&action=index"
+                class="btn btn-action edit tip"
+                data-tip="Administrar usuarios">👤</a>
+            <?php endif; ?>
+    </nav>
+  </div>
+
 <?php endif; ?>
 
 

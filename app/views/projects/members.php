@@ -1,6 +1,12 @@
 <h2>👥 Miembros del Proyecto</h2>
 
 
+<div style="margin-top:12px;" class="project-actions">
+  <a class="btn-action view tip"
+     data-tip="Volver al tablero"
+     href="<?= BASE_URL ?>?controller=projects&action=show&id=<?= (int)$project['id'] ?>">👁️</a>
+</div>
+
 
 <div style="margin-bottom:10px;">
   <strong><?= htmlspecialchars($project['name'] ?? 'Proyecto') ?></strong>
@@ -105,11 +111,3 @@
   </tbody>
 </table>
 
-
-
-
-<div style="margin-top:12px;">
-  <a class="btn-action view tip"
-     data-tip="Volver al tablero"
-     href="<?= BASE_URL ?>?controller=projects&action=show&id=<?= (int)$project['id'] ?>">👁️</a>
-</div>

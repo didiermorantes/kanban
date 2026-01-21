@@ -8,11 +8,13 @@ $taskTimes = $report['taskTimes'];
 
 <h2>📊 Métricas Kanban – <?= htmlspecialchars($project['name']) ?></h2>
 
-<p>
-  <a href="<?= BASE_URL ?>?controller=projects&action=show&id=<?= (int)$project['id'] ?>" class="btn-secondary">
-    ← Volver al tablero
-  </a>
-</p>
+<div style="margin-top:12px;" class="project-actions">
+  <a class="btn-action view tip"
+     data-tip="Volver al tablero"
+     href="<?= BASE_URL ?>?controller=projects&action=show&id=<?= (int)$project['id'] ?>">👁️</a>
+</div>
+
+
 
 <div style="display:flex; gap:16px; flex-wrap:wrap;">
   <div style="background:#fff; padding:12px; border-radius:8px; box-shadow:0 2px 6px rgba(0,0,0,.08); min-width:260px;">
