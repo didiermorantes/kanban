@@ -133,25 +133,16 @@
                             </strong>
 
                             <!-- responsable -->
-                            <?php if (!empty($task['responsible'])): ?>
-                                <div style="margin-top:4px;">
-                                      <?php
-                                        $resp = trim($task['responsible'] ?? '');
-                                        $initial = $resp !== '' ? mb_strtoupper(mb_substr($resp, 0, 1)) : '—';
-                                      ?>
-                                      <div style="margin-top:6px;">
-                                        <span class="badge-resp task-responsible editable <?= $resp === '' ? 'muted' : '' ?> tip"
-                                              data-field="responsible"
-                                              data-tip="Doble Click para Editar Responsable">
-                                          <span class="avatar"><?= htmlspecialchars($initial) ?></span>
-                                          <span class="name"><?= htmlspecialchars($resp !== '' ? $resp : 'Sin responsable') ?></span>
-                                        </span>
-                                      </div>
-
-                                </div>
-
-                            <?php endif; ?>
-
+                            <?php
+                              $respName = trim((string)($task['responsible_name'] ?? ($task['responsible'] ?? '')));
+                              $initial = $respName !== '' ? mb_strtoupper(mb_substr($respName, 0, 1)) : '—';
+                            ?>
+                            <div style="margin-top:6px;">
+                              <span class="badge-resp task-responsible <?= $respName === '' ? 'muted' : '' ?>">
+                                <span class="avatar"><?= htmlspecialchars($initial) ?></span>
+                                <span class="name"><?= htmlspecialchars($respName !== '' ? $respName : 'Sin responsable') ?></span>
+                              </span>
+                            </div>
 
                             <?php if (!empty($task['description'])): ?>
                                 <small><?= nl2br(htmlspecialchars($task['description'])) ?></small><br>
@@ -232,8 +223,15 @@
             <label for="title">Título de la tarea *</label>
             <input type="text" id="title" name="title" placeholder="Ej: Definir requerimientos" required>
 
-            <label for="responsible">Responsable (opcional)</label>
-            <input type="text" id="responsible" name="responsible" placeholder="Ej: Didier Morantes">
+            <label for="responsible_user_id">Responsable (opcional)</label>
+            <select id="responsible_user_id" name="responsible_user_id">
+              <option value="">Sin responsable</option>
+              <?php foreach (($members ?? []) as $m): ?>
+                <option value="<?= (int)$m['id'] ?>">
+                  <?= htmlspecialchars($m['name']) ?> (<?= htmlspecialchars($m['role']) ?>)
+                </option>
+              <?php endforeach; ?>
+            </select>
 
 
             <label for="description">Descripción (opcional)</label>

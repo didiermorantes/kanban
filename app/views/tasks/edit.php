@@ -17,9 +17,15 @@
     <input type="text" id="title" name="title" required
            value="<?= htmlspecialchars($task['title']) ?>">
 
-    <label for="responsible">Responsable (opcional)</label>
-    <input type="text" id="responsible" name="responsible"
-            value="<?= htmlspecialchars($task['responsible'] ?? '') ?>">
+    <label for="responsible_user_id">Responsable (opcional)</label>
+    <select id="responsible_user_id" name="responsible_user_id">
+        <option value="">Sin responsable</option>
+        <?php foreach (($members ?? []) as $m): ?>
+            <option value="<?= (int)$m['id'] ?>" <?= ((int)($task['responsible_user_id'] ?? 0) === (int)$m['id']) ? 'selected' : '' ?>>
+                <?= htmlspecialchars($m['name']) ?> (<?= htmlspecialchars($m['role']) ?>)
+            </option>
+        <?php endforeach; ?>
+    </select>
 
 
     <label for="description">Descripción (opcional)</label>

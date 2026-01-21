@@ -13,10 +13,9 @@ class TasksController extends BaseController
     {
             Auth::requireLogin();
 
-            $projectId = (int)$_POST['project_id'];
-            ProjectMember::ensureMember($projectId, Auth::userId());
-            
         $projectId   = (int)($_POST['project_id'] ?? 0);
+        ProjectMember::ensureMember($projectId, Auth::userId());
+
         $columnId    = (int)($_POST['column_id'] ?? 0);
         $title       = trim($_POST['title'] ?? '');
         $description = trim($_POST['description'] ?? '');
@@ -31,6 +30,14 @@ class TasksController extends BaseController
 
         $responsibleUserId = (int)($_POST['responsible_user_id'] ?? 0);
         if ($responsibleUserId <= 0) $responsibleUserId = null;
+
+        if ($responsibleUserId !== null) {
+            if (!ProjectMember::roleFor($projectId, $responsibleUserId)) {
+                $this->setFlash('error', 'Responsable inválido (no es miembro del proyecto).');
+                header('Location: ' . BASE_URL . '?controller=projects&action=show&id=' . $projectId);
+                exit;
+            }
+        }
 
         Task::create($projectId, $columnId, $title, $description, $responsibleUserId, Auth::userId());
 
@@ -100,9 +107,12 @@ class TasksController extends BaseController
             throw new Exception("Tarea no encontrada");
         }
 
+        $members = ProjectMember::usersForProject($projectId);
+
         $this->render('tasks/edit', [
             'task'      => $task,
             'projectId' => $projectId,
+            'members'   => $members,
         ]);
     }
 

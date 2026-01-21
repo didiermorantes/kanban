@@ -8,10 +8,13 @@ class Task extends Model
     {
         $db = self::db();
         $stmt = $db->prepare("
-            SELECT * 
-            FROM tasks
-            WHERE project_id = :project_id
-            ORDER BY `order` ASC, created_at ASC
+            SELECT
+                t.*,
+                u.name AS responsible_name
+            FROM tasks t
+            LEFT JOIN users u ON u.id = t.responsible_user_id
+            WHERE t.project_id = :project_id
+            ORDER BY t.`order` ASC, t.created_at ASC
         ");
         $stmt->execute(['project_id' => $projectId]);
         return $stmt->fetchAll();
